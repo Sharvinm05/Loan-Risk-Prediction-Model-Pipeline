@@ -26,6 +26,12 @@ jobs:
         pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Run tests
+      run: |
+        pytest tests/
+      # Optional: You can continue even if tests fail by uncommenting the next line
+      # continue-on-error: true
+
     - name: Lint with flake8
       run: |
         pip install flake8
