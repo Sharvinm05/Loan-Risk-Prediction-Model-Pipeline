@@ -1,4 +1,4 @@
-﻿# MoneyLion-Assessment
+﻿# Loan Risk Model Prediction
 
 This repository contains a complete machine learning pipeline, from data ingestion and preprocessing to model training, evaluation, and deployment using FastAPI. The pipeline also includes unit and integration tests to ensure the robustness of each component.
 
