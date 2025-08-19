@@ -71,27 +71,74 @@ This will start the FastAPI server, which you can access at http://127.0.0.1:800
 
 
 ## Available Endpoints
-- /predict: POST endpoint to make predictions. Example request body:
+- **/predict**: POST endpoint to make predictions (requires authentication)
+- **/health**: GET endpoint for health checks (no authentication required)
 
+### Example Prediction Request
+
+**Important**: The `/predict` endpoint requires authentication via the `X-API-Key` header.
+
+```bash
+curl -X POST http://127.0.0.1:8000/predict \
+  -H "X-API-Key: demo-key-123456" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "loanAmount": 3000,
+    "apr": 199,
+    "nPaidOff": 0,
+    "isFunded": 1,
+    "state": "CA",
+    "leadCost": 0,
+    "payFrequency": "B",
+    "originallyScheduledPaymentAmount": 6395.19
+  }'
+```
+
+**Response**:
 ```json
-
 {
-  "loanAmount": 3000,
-  "apr": 199,
-  "nPaidOff": 0,
-  "isFunded": 1,
-  "state": "CA",
-  "leadCost": 0,
-  "payFrequency": "B",
-  "originallyScheduledPaymentAmount": 6395.19
+  "loanStatus": "Charged Off",
+  "riskCategory": "High Risk",
+  "confidence": 0.396
 }
 ```
-- /health: GET endpoint for health checks.
 
+
+## Security Features
+
+This application includes comprehensive security measures:
+
+- **Input Validation**: Strict Pydantic models with field validation and type checking
+- **Authentication**: API key-based authentication for prediction endpoints
+- **Data Protection**: Sensitive financial data masking in logs
+- **Security Headers**: Comprehensive HTTP security headers (CSP, XSS protection, etc.)
+- **Rate Limiting**: Per-IP rate limiting to prevent abuse
+- **Request Size Limits**: Protection against large payload attacks
+- **File Integrity**: Model file validation before loading
+- **Secure Configuration**: Localhost-only binding by default
+
+### Authentication
+
+The `/predict` endpoint requires authentication via the `X-API-Key` header:
+
+```bash
+curl -X POST http://127.0.0.1:8000/predict \
+  -H "X-API-Key: demo-key-123456" \
+  -H "Content-Type: application/json" \
+  -d '{"loanAmount": 3000, "apr": 199, ...}'
+```
+
+For detailed security information, see [SECURITY_FIXES.md](SECURITY_FIXES.md).
 
 ## Running the Tests
 To run the unit and integration tests:
 
 ```bash
 pytest
+```
+
+To run security tests specifically:
+
+```bash
+python test_security.py
 ```
